@@ -1,0 +1,52 @@
+{
+  "components": [
+    {
+      "name": "footer",
+      "description": "Three-column site footer with branding, location, socials, and email",
+      "category": "layout",
+      "frameworks": ["next", "react", "astro"]
+    },
+    {
+      "name": "top-banner",
+      "description": "Sticky top announcement bar with scrolling marquee text and logo",
+      "category": "layout",
+      "frameworks": ["next", "react", "astro"]
+    },
+    {
+      "name": "video-hero",
+      "description": "Full-screen video background hero section with logo and headline",
+      "category": "display",
+      "frameworks": ["next", "react", "astro"]
+    },
+    {
+      "name": "tagline",
+      "description": "Scroll-animated text following a curved SVG path",
+      "category": "display",
+      "frameworks": ["next", "react", "astro"]
+    },
+    {
+      "name": "carousel",
+      "description": "Infinite horizontal scroll carousel with scale and opacity effects",
+      "category": "display",
+      "frameworks": ["next", "react", "astro"]
+    },
+    {
+      "name": "navbar",
+      "description": "Sticky nav with mobile menu, cart badge, and scroll-aware transparency",
+      "category": "navigation",
+      "frameworks": ["next", "react", "astro"]
+    },
+    {
+      "name": "product-card",
+      "description": "Product card with hover image swap and quick-add button",
+      "category": "commerce",
+      "frameworks": ["next", "react", "astro"]
+    },
+    {
+      "name": "cart-modal",
+      "description": "Add-to-cart confirmation modal",
+      "category": "commerce",
+      "frameworks": ["next", "react", "astro"]
+    }
+  ]
+}
