@@ -1,0 +1,10 @@
+{
+  "name": "tagline",
+  "description": "Scroll-animated text following a curved SVG path",
+  "files": ["tagline.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["react"], "notes": "Uses useEffect for scroll tracking" },
+    "react": { "deps": ["react"], "notes": "Uses useEffect for scroll tracking" },
+    "astro": { "deps": [],        "notes": "Scroll animation handled with a vanilla JS <script> block" }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "carousel",
+  "description": "Infinite horizontal scroll carousel with scale and opacity effects",
+  "files": ["carousel.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["next", "react"], "notes": "Uses next/image. Requires no-scrollbar utility in Tailwind" },
+    "react": { "deps": ["react"],         "notes": "Uses plain <img>. Requires no-scrollbar utility in Tailwind" },
+    "astro": { "deps": [],                "notes": "Full carousel logic in vanilla JS <script>. Requires no-scrollbar utility" }
+  }
+}

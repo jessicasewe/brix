@@ -1,0 +1,10 @@
+{
+  "name": "video-hero",
+  "description": "Full-screen video background hero section with logo and headline",
+  "files": ["video-hero.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["next", "react"], "notes": "Uses next/image and next/link" },
+    "react": { "deps": ["react"],         "notes": "Uses plain <img> and <a> tags" },
+    "astro": { "deps": [],                "notes": "Autoplay triggered via inline <script>" }
+  }
+}

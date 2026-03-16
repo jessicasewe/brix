@@ -1,0 +1,133 @@
+---
+interface SocialLink {
+  uri: string;
+  title: string;
+}
+
+interface Props {
+  footer: {
+    address: string;
+    email: string;
+    socialLinks: SocialLink[];
+    logoUrl: string;
+    secondChanceLogoUrl?: string;
+    secondChanceAlbumLink?: string;
+    theorLogoUrl: string;
+    theorLink: { uri: string; title: string };
+  };
+  headline: string;
+}
+
+const { footer, headline } = Astro.props;
+
+const addressLines = footer.address.split("\n").filter((line: string) => line.trim());
+
+const instagramLink = footer.socialLinks.find((link: SocialLink) =>
+  link.title.toLowerCase().includes("instagram")
+);
+
+const instagramHandle = instagramLink?.uri
+  .replace(/https?:\/\/(www\.)?instagram\.com\//, "@")
+  .replace(/\/$/, "");
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-black text-[#fcf5e9] px-6 md:px-10 lg:px-16 py-6 md:py-8">
+  <div class="max-w-screen-xl mx-auto flex flex-col gap-6">
+    <div class="flex flex-col md:flex-row gap-10 md:gap-0 justify-between">
+
+      <!-- Left Column -->
+      <div class="flex flex-col items-center md:items-start md:w-[22%]">
+        <div class="flex flex-col items-center md:items-start gap-4 md:mt-8">
+          <a
+            href={footer.theorLink?.uri || "https://theor.org/"}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={footer.theorLogoUrl || "/images/theorlogoblk.png"}
+              alt="The Or Foundation"
+              width="200"
+              height="80"
+              class="object-contain brightness-0 invert"
+            />
+          </a>
+          <p class="text-sm text-white/70 text-center w-full max-w-[200px]">
+            An Initiative By<br />The Or Foundation
+          </p>
+        </div>
+      </div>
+
+      <!-- Middle Column -->
+      <div class="md:w-[35%] flex flex-col gap-5 justify-center items-center">
+        <div class="text-center">
+          <p class="font-semibold text-white mb-0.5">Location</p>
+          {addressLines.map((line: string) => (
+            <p class="text-sm text-white/70">{line}</p>
+          ))}
+        </div>
+
+        <div class="text-center">
+          <p class="font-semibold text-white mb-0.5">Socials</p>
+          {instagramLink ? (
+            <a
+              href={instagramLink.uri}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-white/70 hover:text-white transition-colors"
+            >
+              {instagramHandle}
+            </a>
+          ) : (
+            <p class="text-sm text-white/70">@othershowroom</p>
+          )}
+        </div>
+
+        <div class="text-center">
+          <p class="font-semibold text-white mb-0.5">Email</p>
+          <a
+            href={`mailto:${footer.email}`}
+            class="text-sm text-white/70 hover:text-white transition-colors"
+          >
+            {footer.email}
+          </a>
+        </div>
+        <p class="text-xs text-white/50 text-center mt-2">
+          Copyright (C) The Or Foundation - {year}
+        </p>
+      </div>
+
+      <!-- Right Column -->
+      <div class="md:w-[28%] flex flex-col items-center justify-center gap-6">
+        <div class="flex flex-col items-center gap-2">
+          <img
+            src={footer.logoUrl}
+            alt={headline}
+            class="w-16 h-16 object-contain"
+          />
+          <span class="uppercase tracking-widest text-lg font-semibold text-[#fcf5e9]">
+            {headline}
+          </span>
+        </div>
+
+        {footer.secondChanceLogoUrl && footer.secondChanceAlbumLink && (
+          <a
+            href={footer.secondChanceAlbumLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={footer.secondChanceLogoUrl}
+              alt="Secondary Logo"
+              width="260"
+              height="90"
+              class="object-contain"
+            />
+          </a>
+        )}
+      </div>
+
+    </div>
+  </div>
+</footer>

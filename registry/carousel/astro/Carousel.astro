@@ -1,0 +1,189 @@
+---
+interface CarouselItem {
+  id: string;
+  url: string;
+  alt: string;
+  title: string;
+}
+
+interface Props {
+  items: CarouselItem[];
+  rotatingIconUrl?: string;
+}
+
+const { items, rotatingIconUrl } = Astro.props;
+const copies = 5;
+const middleCopy = Math.floor(copies / 2);
+const count = items.length || 1;
+
+const extended = items.length > 0
+  ? Array.from({ length: count * copies }, (_, i) => ({
+      ...items[i % count],
+      extIndex: i,
+    }))
+  : [];
+
+const initialIndex = count * middleCopy;
+---
+
+<section class="bg-[#fcf5e9] overflow-hidden pt-1 pb-6">
+  <div class="max-w-[550px] mx-auto px-2">
+    <div class="relative h-[380px] sm:h-[480px] lg:h-[760px]">
+
+      {rotatingIconUrl && (
+        <div class="absolute inset-x-0 bottom-0 flex justify-center pointer-events-none">
+          <img
+            id="carousel-icon"
+            src={rotatingIconUrl}
+            alt=""
+            class="w-[300px] h-[300px] sm:w-[320px] sm:h-[320px] md:w-[420px] md:h-[420px] lg:w-[620px] lg:h-[620px] object-contain opacity-15 transition-transform duration-700"
+          />
+        </div>
+      )}
+
+      <div
+        id="carousel-track"
+        class="flex items-end gap-1 overflow-x-auto h-full"
+        style="scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none;"
+      >
+        {extended.map((item) => (
+          <div
+            class="carousel-item shrink-0 flex items-end justify-center h-full w-[340px] sm:w-[320px] lg:w-[520px]"
+            style="scroll-snap-align: center; scroll-snap-stop: always;"
+            data-index={item.extIndex}
+          >
+            <button
+              class="carousel-btn relative transition-all duration-500 ease-out origin-bottom scale-75 opacity-100"
+              style="backface-visibility: hidden;"
+              data-index={item.extIndex}
+            >
+              <div class="relative overflow-hidden w-[340px] h-[400px] sm:w-[320px] sm:h-[360px] lg:w-[520px] lg:h-[580px]">
+                <img
+                  src={item.url}
+                  alt={item.alt}
+                  class="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+            </button>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ initialIndex, count, copies, middleCopy: middleCopy }}>
+  const track = document.getElementById("carousel-track");
+  const icon = document.getElementById("carousel-icon");
+  const buttons = document.querySelectorAll(".carousel-btn");
+  const items = document.querySelectorAll(".carousel-item");
+
+  let activeIndex = initialIndex;
+  let iconRotation = 0;
+  let isProgrammatic = false;
+  let scrollTimeout = null;
+  let rafId = null;
+
+  function setActive(index) {
+    activeIndex = index;
+    iconRotation += 180;
+    if (icon) icon.style.transform = `rotate(${iconRotation}deg)`;
+
+    buttons.forEach((btn) => {
+      const i = parseInt(btn.dataset.index);
+      const dist = Math.abs(i - index);
+      btn.classList.toggle("scale-100", i === index);
+      btn.classList.toggle("z-10", i === index);
+      btn.classList.toggle("scale-75", i !== index);
+      btn.classList.toggle("z-0", i !== index);
+      btn.classList.toggle("opacity-40", dist >= 3);
+      btn.classList.toggle("opacity-100", dist < 3);
+    });
+  }
+
+  function scrollToItem(index, behavior = "smooth") {
+    const container = track;
+    const item = items[index];
+    if (!container || !item) return;
+
+    isProgrammatic = true;
+    const cRect = container.getBoundingClientRect();
+    const iRect = item.getBoundingClientRect();
+    const left = container.scrollLeft + iRect.left - cRect.left - cRect.width / 2 + iRect.width / 2;
+    container.scrollTo({ left, behavior });
+    setTimeout(() => { isProgrammatic = false; }, behavior === "smooth" ? 520 : 50);
+  }
+
+  function calcClosest() {
+    const cRect = track.getBoundingClientRect();
+    const centerX = cRect.left + cRect.width / 2;
+    let closest = -1;
+    let dist = Infinity;
+    items.forEach((el, i) => {
+      const rect = el.getBoundingClientRect();
+      const d = Math.abs(rect.left + rect.width / 2 - centerX);
+      if (d < dist) { dist = d; closest = i; }
+    });
+    return closest;
+  }
+
+  // Init
+  requestAnimationFrame(() => {
+    scrollToItem(initialIndex, "auto");
+    setActive(initialIndex);
+  });
+
+  // Scroll handler
+  track.addEventListener("scroll", () => {
+    if (isProgrammatic) return;
+    if (scrollTimeout) clearTimeout(scrollTimeout);
+    if (rafId) cancelAnimationFrame(rafId);
+
+    rafId = requestAnimationFrame(() => {
+      const cRect = track.getBoundingClientRect();
+      const centerX = cRect.left + cRect.width / 2;
+      const threshold = cRect.width * 0.06;
+      let closest = -1;
+      let minDist = threshold;
+
+      items.forEach((el, i) => {
+        const rect = el.getBoundingClientRect();
+        const d = Math.abs(rect.left + rect.width / 2 - centerX);
+        if (d < minDist) { minDist = d; closest = i; }
+      });
+
+      if (closest !== -1 && closest !== activeIndex) setActive(closest);
+    });
+
+    scrollTimeout = setTimeout(() => {
+      const idx = calcClosest();
+      if (idx === -1) return;
+      const base = idx % count;
+      const middle = count * middleCopy + base;
+
+      if (idx < count || idx >= count * (copies - 1)) {
+        setActive(middle);
+        scrollToItem(middle, "auto");
+      } else if (idx !== activeIndex) {
+        setActive(idx);
+      }
+    }, 100);
+  }, { passive: true });
+
+  // Button clicks
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const index = parseInt(btn.dataset.index);
+      setActive(index);
+      scrollToItem(index, "smooth");
+    });
+  });
+
+  // Resize
+  window.addEventListener("resize", () => scrollToItem(activeIndex, "auto"));
+</script>
+
+<style>
+  #carousel-track::-webkit-scrollbar { display: none; }
+</style>

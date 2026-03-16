@@ -1,0 +1,10 @@
+{
+  "name": "top-banner",
+  "description": "Sticky top announcement bar with scrolling marquee text and logo",
+  "files": ["top-banner.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["next", "react"], "notes": "Requires animate-marquee in your Tailwind config" },
+    "react": { "deps": ["react"],         "notes": "Requires animate-marquee in your Tailwind config" },
+    "astro": { "deps": [],                "notes": "Requires animate-marquee in your Tailwind config" }
+  }
+}

@@ -1,0 +1,61 @@
+---
+interface Props {
+  quoteText: string;
+  backgroundImageUrl?: string;
+}
+
+const { quoteText, backgroundImageUrl = "/images/garmet-section.png" } = Astro.props;
+---
+
+<section
+  id="tagline-section"
+  class="relative overflow-hidden bg-[#cca342] h-[70vh] sm:h-screen"
+>
+  <svg
+    viewBox="0 0 1440 900"
+    preserveAspectRatio="xMidYMid slice"
+    class="absolute inset-0 w-full h-full"
+  >
+    <image
+      href={backgroundImageUrl}
+      width="1440"
+      height="900"
+      preserveAspectRatio="xMidYMid slice"
+    />
+    <path
+      id="whitePath"
+      d="M 350 980 C 60 420, 720 280, 1040 440 C 1280 550, 1480 980, 1780 960"
+      fill="none"
+      stroke-width="3"
+    />
+    <text
+      fill="#1f1a12"
+      font-size="30"
+      font-weight="600"
+      letter-spacing="2"
+      dominant-baseline="middle"
+    >
+      <textPath href="#whitePath" id="tagline-text" startOffset="65%">
+        {quoteText}
+      </textPath>
+    </text>
+  </svg>
+</section>
+
+<script>
+  const section = document.getElementById("tagline-section");
+  const textPath = document.getElementById("tagline-text");
+
+  function onScroll() {
+    if (!section || !textPath) return;
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const raw = (vh - rect.top) / (vh + rect.height);
+    const progress = Math.min(Math.max(raw, 0), 1);
+    const offset = 65 - progress * 100;
+    textPath.setAttribute("startOffset", `${offset}%`);
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>

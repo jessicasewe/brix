@@ -1,0 +1,10 @@
+{
+  "name": "footer",
+  "description": "Three-column site footer with logo, location, socials, and email",
+  "files": ["footer.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["next", "react"], "notes": "Uses next/link and next/image" },
+    "react": { "deps": ["react"],         "notes": "Plain <a> and <img> tags" },
+    "astro": { "deps": [],                "notes": "Static .astro component, no JS required" }
+  }
+}
