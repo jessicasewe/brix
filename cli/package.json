@@ -1,0 +1,16 @@
+{
+  "name": "brix-ui",
+  "version": "0.1.0",
+  "description": "Grab components, drop them in, own the code.",
+  "main": "index.js",
+  "bin": {
+    "brix-ui": "./index.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
