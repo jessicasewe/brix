@@ -1,0 +1,26 @@
+import type { Metadata } from "next";
+import { Figtree } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
+import { Navbar } from "./components/navbar";
+import "./globals.css";
+
+const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Brix — Component Library",
+  description: "Grab components, drop them in, own the code.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body className={`${figtree.variable} ${geistMono.variable} antialiased font-sans`}>
+        <Navbar />
+        {children}
+      </body>
+    </html>
+  );
+}

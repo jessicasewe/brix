@@ -1,0 +1,10 @@
+{
+  "name": "product-card",
+  "description": "Product card with hover image swap and quick-add button",
+  "files": ["product-card.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["next", "react"], "notes": "Uses next/link and next/image" },
+    "react": { "deps": ["react"],         "notes": "Plain <a> and <img> tags" },
+    "astro": { "deps": [],                "notes": "Hover swap handled with inline <script>" }
+  }
+}

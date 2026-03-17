@@ -1,0 +1,10 @@
+{
+  "name": "navbar",
+  "description": "Sticky nav with mobile menu, cart badge, and scroll-aware transparency",
+  "files": ["navbar.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["next", "react"], "notes": "Uses next/link and next/image" },
+    "react": { "deps": ["react"],         "notes": "Plain <a> and <img> tags" },
+    "astro": { "deps": [],                "notes": "Scroll and menu toggle handled with inline <script>" }
+  }
+}

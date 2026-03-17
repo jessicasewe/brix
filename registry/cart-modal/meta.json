@@ -1,0 +1,10 @@
+{
+  "name": "cart-modal",
+  "description": "Add-to-cart confirmation modal with quantity selector",
+  "files": ["cart-modal.tsx"],
+  "frameworks": {
+    "next":  { "deps": ["next", "react"], "notes": "Uses next/link and next/image" },
+    "react": { "deps": ["react"],         "notes": "Plain <a> and <img> tags" },
+    "astro": { "deps": [],                "notes": "Quantity and open/close handled with inline <script>" }
+  }
+}
