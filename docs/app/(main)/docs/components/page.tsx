@@ -28,7 +28,15 @@ export default function ComponentsIndex() {
           if (!group.length) return null;
           return (
             <div key={cat}>
-              <p className="text-[10px] uppercase tracking-widest text-black/30 font-medium mb-3">{cat}</p>
+              {(() => {
+                const catColors: Record<string, string> = {
+                  layout:     "text-amber-600",
+                  display:    "text-emerald-600",
+                  navigation: "text-blue-600",
+                  commerce:   "text-rose-600",
+                };
+                return <p className={`text-[10px] uppercase tracking-widest font-semibold mb-3 ${catColors[cat] ?? "text-black/30"}`}>{cat}</p>;
+              })()}
               <div className="space-y-1">
                 {group.map((c) => (
                   <Link

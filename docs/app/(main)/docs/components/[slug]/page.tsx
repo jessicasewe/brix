@@ -23,13 +23,34 @@ const componentVariations: Record<string, Array<{ id: string; label: string; des
     { id: "minimal",  label: "Minimal",       description: "Single-row footer — brand name, nav links, copyright" },
     { id: "grid",     label: "Multi-column",  description: "Four-column grid with shop links, company links, and newsletter" },
   ],
-  "top-banner":   [{ id: "default", label: "Default", description: "Gold announcement bar with scrolling marquee and logo" }],
-  "video-hero":   [{ id: "default", label: "Default", description: "Full-screen video background with headline and logo" }],
-  tagline:        [{ id: "default", label: "Default", description: "Scroll-animated text following a curved SVG path" }],
-  carousel:       [{ id: "default", label: "Default", description: "Infinite horizontal scroll carousel with scale and opacity effects" }],
-  navbar:         [{ id: "default", label: "Default", description: "Sticky nav with mobile menu, cart badge, and scroll-aware transparency" }],
-  "product-card": [{ id: "default", label: "Default", description: "Product card with hover image swap and quick-add button" }],
-  "cart-modal":   [{ id: "default", label: "Default", description: "Add-to-cart confirmation modal with quantity selector" }],
+  "top-banner": [
+    { id: "default", label: "Gold",  description: "Warm gold announcement bar with scrolling marquee and logo" },
+    { id: "dark",    label: "Dark",  description: "Black background with white text — for dark-themed sites" },
+  ],
+  "video-hero": [
+    { id: "default", label: "Video",   description: "Full-screen video background with headline and logo" },
+    { id: "overlay", label: "Overlay", description: "Warm amber gradient with centered headline and CTA" },
+  ],
+  tagline: [
+    { id: "default", label: "Animated", description: "Scroll-animated text following a curved SVG path" },
+    { id: "light",   label: "Static",   description: "Curved text on a warm gold background — no scroll dependency" },
+  ],
+  carousel: [
+    { id: "default",  label: "Default",  description: "Infinite horizontal scroll carousel with scale and opacity effects" },
+    { id: "portrait", label: "Portrait", description: "Taller portrait-ratio images for editorial layouts" },
+  ],
+  navbar: [
+    { id: "default", label: "Transparent", description: "Starts transparent, fills dark on scroll — for hero pages" },
+    { id: "light",   label: "Light",       description: "Always-white navbar with dark text — for content pages" },
+  ],
+  "product-card": [
+    { id: "default", label: "Single",     description: "Product card with hover image swap and quick-add button" },
+    { id: "grid",    label: "Collection", description: "Three cards in a responsive grid — as used in shop pages" },
+  ],
+  "cart-modal": [
+    { id: "default", label: "Modal",  description: "Centred overlay modal with quantity selector and actions" },
+    { id: "slide",   label: "Drawer", description: "Slide-in side panel with full cart summary and checkout" },
+  ],
 };
 
 async function getCode(name: string, framework: string): Promise<string> {
@@ -71,7 +92,19 @@ export default async function ComponentDocPage({
     <div>
       {/* Header */}
       <div className="max-w-2xl mb-10">
-        <p className="text-xs uppercase tracking-widest text-black/30 font-medium mb-2">{component.category}</p>
+        {(() => {
+          const colors: Record<string, string> = {
+            layout:     "bg-amber-50 text-amber-700 border-amber-200",
+            display:    "bg-emerald-50 text-emerald-700 border-emerald-200",
+            navigation: "bg-blue-50 text-blue-700 border-blue-200",
+            commerce:   "bg-rose-50 text-rose-700 border-rose-200",
+          };
+          return (
+            <span className={`inline-block text-xs uppercase tracking-widest font-medium mb-3 px-2.5 py-1 rounded-full border ${colors[component.category] ?? "bg-black/5 text-black/40 border-black/10"}`}>
+              {component.category}
+            </span>
+          );
+        })()}
         <h1 className="text-3xl font-bold text-[#1a1a1a] mb-2">{component.name}</h1>
         <p className="text-black/60 mb-8">{component.description}</p>
 
@@ -87,9 +120,14 @@ export default async function ComponentDocPage({
           const previewSlug = v.id === "default" ? component.name : `${component.name}--${v.id}`;
           return (
             <div key={v.id}>
-              <div className="mb-4">
-                <h2 className="text-base font-semibold text-[#1a1a1a]">{v.label}</h2>
-                <p className="text-sm text-black/45 mt-0.5">{v.description}</p>
+              <div className="mb-4 flex items-start gap-3">
+                <span className="mt-0.5 w-6 h-6 rounded-full bg-[#f0ece4] text-black/40 text-xs font-semibold flex items-center justify-center shrink-0">
+                  {variations.indexOf(v) + 1}
+                </span>
+                <div>
+                  <h2 className="text-base font-semibold text-[#1a1a1a]">{v.label}</h2>
+                  <p className="text-sm text-black/45 mt-0.5">{v.description}</p>
+                </div>
               </div>
               <PreviewFrame
                 slug={previewSlug}

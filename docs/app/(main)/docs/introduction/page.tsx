@@ -20,18 +20,19 @@ export default function Introduction() {
       <p className="text-black/60 text-base leading-relaxed mb-4">
         Every component ships in three flavours out of the box:
       </p>
-      <ul className="space-y-2 mb-6">
+      <div className="grid grid-cols-1 gap-3 mb-6">
         {[
-          ["Next.js", "Uses next/link and next/image"],
-          ["React",   "Plain <a> and <img> — no framework deps"],
-          ["Astro",   ".astro file with inline scripts for interactivity"],
-        ].map(([fw, note]) => (
-          <li key={fw} className="flex gap-3 text-sm">
-            <span className="font-medium text-[#1a1a1a] w-20 shrink-0">{fw}</span>
-            <span className="text-black/50">{note}</span>
-          </li>
+          { fw: "Next.js", note: "Uses next/link and next/image", color: "bg-black/90 text-white", dot: "bg-white" },
+          { fw: "React",   note: "Plain <a> and <img> — no framework deps", color: "bg-[#e8f7fe] text-[#087ea4]", dot: "bg-[#61DAFB]" },
+          { fw: "Astro",   note: ".astro file with inline scripts for interactivity", color: "bg-[#fff4f0] text-[#FF5D01]", dot: "bg-[#FF5D01]" },
+        ].map(({ fw, note, color, dot }) => (
+          <div key={fw} className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${color}`}>
+            <div className={`w-2 h-2 rounded-full shrink-0 ${dot}`} />
+            <span className="font-semibold w-16 shrink-0">{fw}</span>
+            <span className="opacity-70">{note}</span>
+          </div>
         ))}
-      </ul>
+      </div>
 
       <h2 id="quick-start" className="text-lg font-semibold text-[#1a1a1a] mb-3 mt-10">Quick start</h2>
       <div className="bg-[#1a1a1a] rounded-xl px-5 py-4 font-mono text-sm text-white/80">

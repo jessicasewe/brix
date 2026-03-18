@@ -9,6 +9,13 @@ import { CartModalPreview } from "../previews/cart-modal-preview";
 import { TaglinePreview } from "../previews/tagline-preview";
 import { VideoHeroPreview } from "../previews/video-hero-preview";
 import { CarouselPreview } from "../previews/carousel-preview";
+import { TopBannerDarkPreview } from "../previews/top-banner--dark-preview";
+import { NavbarLightPreview } from "../previews/navbar--light-preview";
+import { ProductCardGridPreview } from "../previews/product-card--grid-preview";
+import { CartModalSlidePreview } from "../previews/cart-modal--slide-preview";
+import { VideoHeroOverlayPreview } from "../previews/video-hero--overlay-preview";
+import { TaglineLightPreview } from "../previews/tagline--light-preview";
+import { CarouselPortraitPreview } from "../previews/carousel--portrait-preview";
 
 const previews: Record<string, React.ComponentType> = {
   footer: FooterPreview,
@@ -21,6 +28,13 @@ const previews: Record<string, React.ComponentType> = {
   tagline: TaglinePreview,
   "video-hero": VideoHeroPreview,
   carousel: CarouselPreview,
+  "top-banner--dark": TopBannerDarkPreview,
+  "navbar--light": NavbarLightPreview,
+  "product-card--grid": ProductCardGridPreview,
+  "cart-modal--slide": CartModalSlidePreview,
+  "video-hero--overlay": VideoHeroOverlayPreview,
+  "tagline--light": TaglineLightPreview,
+  "carousel--portrait": CarouselPortraitPreview,
 };
 
 export default async function PreviewPage({ params }: { params: Promise<{ slug: string }> }) {
