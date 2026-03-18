@@ -100,7 +100,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
 
       {/* Main content */}
       <main className="flex-1 min-w-0 flex justify-center px-8 py-12 overflow-x-hidden">
-        <div className="w-full max-w-3xl">
+        <div className="w-full max-w-5xl">
           {children}
           <PrevNext />
         </div>
