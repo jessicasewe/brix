@@ -1,6 +1,6 @@
 export default function Theming() {
   return (
-    <div>
+    <div className="max-w-2xl mx-auto">
       <p className="text-xs uppercase tracking-widest text-black/30 font-medium mb-2">Customisation</p>
       <h1 className="text-3xl font-bold text-[#1a1a1a] mb-4">Theming</h1>
       <p className="text-black/60 text-base leading-relaxed mb-8">
