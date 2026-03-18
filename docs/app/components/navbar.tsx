@@ -27,6 +27,9 @@ export function Navbar() {
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Don't render the docs navbar inside component previews (iframe)
+  if (pathname.startsWith("/preview")) return null;
+
   useEffect(() => {
     fetch("https://api.github.com/repos/jessicasewe/brix")
       .then((r) => r.json())
