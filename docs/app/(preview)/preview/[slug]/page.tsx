@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { FooterPreview } from "../previews/footer-preview";
+import { FooterMinimalPreview } from "../previews/footer-minimal-preview";
+import { FooterGridPreview } from "../previews/footer-grid-preview";
 import { TopBannerPreview } from "../previews/top-banner-preview";
 import { NavbarPreview } from "../previews/navbar-preview";
 import { ProductCardPreview } from "../previews/product-card-preview";
@@ -10,6 +12,8 @@ import { CarouselPreview } from "../previews/carousel-preview";
 
 const previews: Record<string, React.ComponentType> = {
   footer: FooterPreview,
+  "footer--minimal": FooterMinimalPreview,
+  "footer--grid": FooterGridPreview,
   "top-banner": TopBannerPreview,
   navbar: NavbarPreview,
   "product-card": ProductCardPreview,

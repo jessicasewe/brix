@@ -16,6 +16,35 @@ const registry = [
   { name: "cart-modal",   description: "Add-to-cart confirmation modal with quantity selector",             category: "commerce",   frameworks: ["next", "react", "astro"] },
 ];
 
+const componentVariations: Record<string, Array<{ id: string; label: string; description: string }>> = {
+  footer: [
+    { id: "default",  label: "Default",        description: "Three-column footer with logo, location, socials, and email" },
+    { id: "minimal",  label: "Minimal",         description: "Single-row footer — brand name, nav links, copyright" },
+    { id: "grid",     label: "Multi-column",    description: "Four-column grid with shop links, company links, and newsletter" },
+  ],
+  "top-banner": [
+    { id: "default", label: "Default", description: "Gold announcement bar with scrolling marquee and logo" },
+  ],
+  "video-hero": [
+    { id: "default", label: "Default", description: "Full-screen video background with headline and logo" },
+  ],
+  tagline: [
+    { id: "default", label: "Default", description: "Scroll-animated text following a curved SVG path" },
+  ],
+  carousel: [
+    { id: "default", label: "Default", description: "Infinite horizontal scroll carousel with scale and opacity effects" },
+  ],
+  navbar: [
+    { id: "default", label: "Default", description: "Sticky nav with mobile menu, cart badge, and scroll-aware transparency" },
+  ],
+  "product-card": [
+    { id: "default", label: "Default", description: "Product card with hover image swap and quick-add button" },
+  ],
+  "cart-modal": [
+    { id: "default", label: "Default", description: "Add-to-cart confirmation modal with quantity selector" },
+  ],
+};
+
 async function getCode(name: string, framework: string): Promise<string> {
   const ext = framework === "astro"
     ? `${name.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join("")}.astro`
@@ -50,10 +79,12 @@ export default async function ComponentDocPage({
 
   const installCmd = `npx brix-ui add ${component.name}${activeFramework !== "next" ? ` --framework ${activeFramework}` : ""}`;
 
+  const variations = componentVariations[component.name] ?? [{ id: "default", label: "Default", description: component.description }];
+
   return (
     <div>
-      {/* Text header — kept narrow for readability */}
-      <div className="max-w-2xl mb-8">
+      {/* Text header */}
+      <div className="max-w-2xl mb-10">
         <p className="text-xs uppercase tracking-widest text-black/30 font-medium mb-2">{component.category}</p>
         <h1 className="text-3xl font-bold text-[#1a1a1a] mb-2">{component.name}</h1>
         <p className="text-black/60 mb-8">{component.description}</p>
@@ -82,13 +113,26 @@ export default async function ComponentDocPage({
         </div>
       </div>
 
-      {/* Preview + Code — full width */}
-      <PreviewFrame
-        slug={component.name}
-        code={code}
-        fileName={fileName}
-        framework={activeFramework}
-      />
+      {/* Variations */}
+      <div className="flex flex-col gap-12">
+        {variations.map((v) => {
+          const previewSlug = v.id === "default" ? component.name : `${component.name}--${v.id}`;
+          return (
+            <div key={v.id}>
+              <div className="mb-4">
+                <h2 className="text-base font-semibold text-[#1a1a1a]">{v.label}</h2>
+                <p className="text-sm text-black/45 mt-0.5">{v.description}</p>
+              </div>
+              <PreviewFrame
+                slug={previewSlug}
+                code={code}
+                fileName={fileName}
+                framework={activeFramework}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
