@@ -69,7 +69,7 @@ const frameworks = [
 
 export default function Installation() {
   return (
-    <div className="max-w-2xl mx-auto">
+    <div>
       <p className="text-xs uppercase tracking-widest text-black/30 font-medium mb-2">Setup</p>
       <h1 className="text-3xl font-bold text-[#1a1a1a] mb-4">Installation</h1>
       <p className="text-black/60 text-base leading-relaxed mb-10">
