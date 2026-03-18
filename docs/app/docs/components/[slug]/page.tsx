@@ -52,34 +52,37 @@ export default async function ComponentDocPage({
 
   return (
     <div>
-      <p className="text-xs uppercase tracking-widest text-black/30 font-medium mb-2">{component.category}</p>
-      <h1 className="text-3xl font-bold text-[#1a1a1a] mb-2">{component.name}</h1>
-      <p className="text-black/60 mb-8">{component.description}</p>
+      {/* Text header — kept narrow for readability */}
+      <div className="max-w-2xl mb-8">
+        <p className="text-xs uppercase tracking-widest text-black/30 font-medium mb-2">{component.category}</p>
+        <h1 className="text-3xl font-bold text-[#1a1a1a] mb-2">{component.name}</h1>
+        <p className="text-black/60 mb-8">{component.description}</p>
 
-      {/* Install command */}
-      <div className="flex items-center gap-3 bg-[#1a1a1a] rounded-xl px-5 py-3 text-sm font-mono w-fit mb-8">
-        <span className="text-white/30">$</span>
-        <span className="text-white/80">{installCmd}</span>
+        {/* Install command */}
+        <div className="flex items-center gap-3 bg-[#1a1a1a] rounded-xl px-5 py-3 text-sm font-mono w-fit mb-8">
+          <span className="text-white/30">$</span>
+          <span className="text-white/80">{installCmd}</span>
+        </div>
+
+        {/* Framework tabs */}
+        <div className="flex gap-2">
+          {component.frameworks.map((f) => (
+            <a
+              key={f}
+              href={`/docs/components/${component.name}?framework=${f}`}
+              className={`text-sm rounded-full px-4 py-1.5 font-medium transition-colors ${
+                f === activeFramework
+                  ? "bg-[#1a1a1a] text-white"
+                  : "bg-white border border-black/10 text-black/50 hover:border-black/30"
+              }`}
+            >
+              {f}
+            </a>
+          ))}
+        </div>
       </div>
 
-      {/* Framework tabs */}
-      <div className="flex gap-2 mb-5">
-        {component.frameworks.map((f) => (
-          <a
-            key={f}
-            href={`/docs/components/${component.name}?framework=${f}`}
-            className={`text-sm rounded-full px-4 py-1.5 font-medium transition-colors ${
-              f === activeFramework
-                ? "bg-[#1a1a1a] text-white"
-                : "bg-white border border-black/10 text-black/50 hover:border-black/30"
-            }`}
-          >
-            {f}
-          </a>
-        ))}
-      </div>
-
-      {/* Preview + Code */}
+      {/* Preview + Code — full width */}
       <PreviewFrame
         slug={component.name}
         code={code}

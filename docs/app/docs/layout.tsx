@@ -99,11 +99,9 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 min-w-0 flex justify-center px-6 py-12">
-        <div className="w-full max-w-xl">
-          {children}
-          <PrevNext />
-        </div>
+      <main className="flex-1 min-w-0 px-8 py-12 overflow-x-hidden">
+        {children}
+        <PrevNext />
       </main>
 
       {/* Right sidebar */}
