@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { PreviewFrame } from "../preview-frame";
+import { highlight } from "../../../../../lib/highlight";
 
 const REPO = "jessicasewe/brix";
 const BRANCH = "main";
@@ -18,31 +19,17 @@ const registry = [
 
 const componentVariations: Record<string, Array<{ id: string; label: string; description: string }>> = {
   footer: [
-    { id: "default",  label: "Default",        description: "Three-column footer with logo, location, socials, and email" },
-    { id: "minimal",  label: "Minimal",         description: "Single-row footer — brand name, nav links, copyright" },
-    { id: "grid",     label: "Multi-column",    description: "Four-column grid with shop links, company links, and newsletter" },
+    { id: "default",  label: "Default",      description: "Three-column footer with logo, location, socials, and email" },
+    { id: "minimal",  label: "Minimal",       description: "Single-row footer — brand name, nav links, copyright" },
+    { id: "grid",     label: "Multi-column",  description: "Four-column grid with shop links, company links, and newsletter" },
   ],
-  "top-banner": [
-    { id: "default", label: "Default", description: "Gold announcement bar with scrolling marquee and logo" },
-  ],
-  "video-hero": [
-    { id: "default", label: "Default", description: "Full-screen video background with headline and logo" },
-  ],
-  tagline: [
-    { id: "default", label: "Default", description: "Scroll-animated text following a curved SVG path" },
-  ],
-  carousel: [
-    { id: "default", label: "Default", description: "Infinite horizontal scroll carousel with scale and opacity effects" },
-  ],
-  navbar: [
-    { id: "default", label: "Default", description: "Sticky nav with mobile menu, cart badge, and scroll-aware transparency" },
-  ],
-  "product-card": [
-    { id: "default", label: "Default", description: "Product card with hover image swap and quick-add button" },
-  ],
-  "cart-modal": [
-    { id: "default", label: "Default", description: "Add-to-cart confirmation modal with quantity selector" },
-  ],
+  "top-banner":   [{ id: "default", label: "Default", description: "Gold announcement bar with scrolling marquee and logo" }],
+  "video-hero":   [{ id: "default", label: "Default", description: "Full-screen video background with headline and logo" }],
+  tagline:        [{ id: "default", label: "Default", description: "Scroll-animated text following a curved SVG path" }],
+  carousel:       [{ id: "default", label: "Default", description: "Infinite horizontal scroll carousel with scale and opacity effects" }],
+  navbar:         [{ id: "default", label: "Default", description: "Sticky nav with mobile menu, cart badge, and scroll-aware transparency" }],
+  "product-card": [{ id: "default", label: "Default", description: "Product card with hover image swap and quick-add button" }],
+  "cart-modal":   [{ id: "default", label: "Default", description: "Add-to-cart confirmation modal with quantity selector" }],
 };
 
 async function getCode(name: string, framework: string): Promise<string> {
@@ -60,61 +47,42 @@ async function getCode(name: string, framework: string): Promise<string> {
 
 export default async function ComponentDocPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ framework?: string }>;
 }) {
   const { slug } = await params;
-  const { framework: fw } = await searchParams;
 
   const component = registry.find((c) => c.name === slug);
   if (!component) notFound();
 
-  const activeFramework = fw && component.frameworks.includes(fw) ? fw : component.frameworks[0];
-  const code = await getCode(component.name, activeFramework);
-  const fileName = activeFramework === "astro"
-    ? `${component.name.split("-").map((w: string) => w[0].toUpperCase() + w.slice(1)).join("")}.astro`
-    : `${component.name}.tsx`;
+  // Fetch + highlight all framework codes server-side
+  const codes: Record<string, string> = {};
+  const highlightedCodes: Record<string, string> = {};
+  for (const fw of component.frameworks) {
+    const raw = await getCode(component.name, fw);
+    codes[fw] = raw;
+    highlightedCodes[fw] = await highlight(raw, fw === "astro" ? "astro" : "tsx");
+  }
 
-  const installCmd = `npx brix-ui add ${component.name}${activeFramework !== "next" ? ` --framework ${activeFramework}` : ""}`;
-
+  const installCmd = `npx brix-ui add ${component.name}`;
   const variations = componentVariations[component.name] ?? [{ id: "default", label: "Default", description: component.description }];
 
   return (
     <div>
-      {/* Text header */}
+      {/* Header */}
       <div className="max-w-2xl mb-10">
         <p className="text-xs uppercase tracking-widest text-black/30 font-medium mb-2">{component.category}</p>
         <h1 className="text-3xl font-bold text-[#1a1a1a] mb-2">{component.name}</h1>
         <p className="text-black/60 mb-8">{component.description}</p>
 
-        {/* Install command */}
-        <div className="flex items-center gap-3 bg-[#1a1a1a] rounded-xl px-5 py-3 text-sm font-mono w-fit mb-8">
+        <div className="flex items-center gap-3 bg-[#1a1a1a] rounded-xl px-5 py-3 text-sm font-mono w-fit">
           <span className="text-white/30">$</span>
           <span className="text-white/80">{installCmd}</span>
         </div>
-
-        {/* Framework tabs */}
-        <div className="flex gap-2">
-          {component.frameworks.map((f) => (
-            <a
-              key={f}
-              href={`/docs/components/${component.name}?framework=${f}`}
-              className={`text-sm rounded-full px-4 py-1.5 font-medium transition-colors ${
-                f === activeFramework
-                  ? "bg-[#1a1a1a] text-white"
-                  : "bg-white border border-black/10 text-black/50 hover:border-black/30"
-              }`}
-            >
-              {f}
-            </a>
-          ))}
-        </div>
       </div>
 
-      {/* Variations */}
-      <div className="flex flex-col gap-12">
+      {/* Variations — each has its own framework tabs + preview + code */}
+      <div className="flex flex-col gap-14">
         {variations.map((v) => {
           const previewSlug = v.id === "default" ? component.name : `${component.name}--${v.id}`;
           return (
@@ -125,9 +93,10 @@ export default async function ComponentDocPage({
               </div>
               <PreviewFrame
                 slug={previewSlug}
-                code={code}
-                fileName={fileName}
-                framework={activeFramework}
+                componentName={component.name}
+                codes={codes}
+                highlightedCodes={highlightedCodes}
+                frameworks={component.frameworks}
               />
             </div>
           );

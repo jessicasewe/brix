@@ -7,9 +7,10 @@ type Viewport = "desktop" | "tablet" | "mobile";
 
 interface PreviewFrameProps {
   slug: string;
-  code: string;
-  fileName: string;
-  framework: string;
+  componentName: string;
+  codes: Record<string, string>;
+  highlightedCodes: Record<string, string>;
+  frameworks: string[];
 }
 
 const viewportHeights: Record<Viewport, number> = {
@@ -22,7 +23,7 @@ const viewports: { id: Viewport; label: string; width: number | null; icon: Reac
   {
     id: "desktop",
     label: "Desktop",
-    width: null, // fills container
+    width: null,
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-4 h-4">
         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -54,19 +55,48 @@ const viewports: { id: Viewport; label: string; width: number | null; icon: Reac
   },
 ];
 
-export function PreviewFrame({ slug, code, fileName }: PreviewFrameProps) {
+export function PreviewFrame({ slug, componentName, codes, highlightedCodes, frameworks }: PreviewFrameProps) {
   const [viewport, setViewport] = useState<Viewport>("desktop");
+  const [activeFramework, setActiveFramework] = useState(frameworks[0]);
   const [expanded, setExpanded] = useState(false);
 
-  const active = viewports.find((v) => v.id === viewport)!;
-
+  const activeViewport = viewports.find((v) => v.id === viewport)!;
   const height = viewportHeights[viewport];
 
+  const rawCode = codes[activeFramework] ?? "";
+  const highlighted = highlightedCodes[activeFramework] ?? "";
+
+  const fileName = activeFramework === "astro"
+    ? `${componentName.split("-").map((w: string) => w[0].toUpperCase() + w.slice(1)).join("")}.astro`
+    : `${componentName}.tsx`;
+
   return (
-    <div className="flex flex-col gap-0 rounded-2xl overflow-hidden border border-black/10 max-w-5xl">
+    <div className="rounded-2xl overflow-hidden border border-black/10 max-w-5xl">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-black/10">
-        {/* Viewport switcher */}
+      <div className="flex items-center gap-3 px-4 py-2.5 bg-white border-b border-black/10 flex-wrap">
+
+        {/* Preview label + framework tabs — left side */}
+        <div className="flex items-center gap-1">
+          <span className="text-sm font-medium text-[#1a1a1a] px-3 py-1 bg-black/6 rounded-full">Preview</span>
+          {frameworks.map((f) => (
+            <button
+              key={f}
+              onClick={() => setActiveFramework(f)}
+              className={`text-sm px-3 py-1 rounded-full transition-colors font-medium ${
+                f === activeFramework
+                  ? "bg-[#1a1a1a] text-white"
+                  : "text-black/40 hover:text-black/70"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Viewport switcher — right side */}
         <div className="flex items-center gap-1 bg-black/5 rounded-xl p-1">
           {viewports.map((v) => (
             <button
@@ -83,45 +113,42 @@ export function PreviewFrame({ slug, code, fileName }: PreviewFrameProps) {
             </button>
           ))}
         </div>
-
-        {/* Viewport label */}
-        <span className="text-xs text-black/30 font-medium hidden sm:block">
-          {active.width ? `${active.width}px` : "Full width"}
-        </span>
       </div>
 
-      {/* Preview area */}
+      {/* Live preview */}
       <div className="bg-[#edeae2] overflow-x-auto" style={{ height: `${height}px` }}>
         <div
           className="mx-auto transition-all duration-300 h-full"
-          style={{ width: active.width ? `${active.width}px` : "100%" }}
+          style={{ width: activeViewport.width ? `${activeViewport.width}px` : "100%" }}
         >
           <iframe
-            key={viewport}
+            key={`${viewport}-${activeFramework}`}
             src={`/preview/${slug}`}
             className="w-full border-0 block"
             style={{ height: `${height}px` }}
-            title={`${slug} preview — ${active.label}`}
+            title={`${slug} preview — ${activeViewport.label}`}
           />
         </div>
       </div>
 
-      {/* Code block */}
-      <div className="bg-[#1a1a1a]">
+      {/* Code block — shiki highlighted */}
+      <div>
         {/* Code header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-white/8">
-          <span className="text-xs text-white/30 font-mono">{fileName}</span>
-          <CopyInline text={code} />
+        <div className="flex items-center justify-between px-5 py-3 bg-[#0d1117] border-t-2 border-[#30363d]">
+          <span className="text-xs text-[#8b949e] font-mono">{fileName}</span>
+          <CopyInline text={rawCode} />
         </div>
 
-        {/* Code content */}
+        {/* Highlighted code */}
         <div className={`relative overflow-hidden transition-all duration-300 ${expanded ? "" : "max-h-52"}`}>
-          <pre className="p-5 overflow-x-auto text-sm text-white/75 font-mono leading-relaxed">
-            <code>{code}</code>
-          </pre>
+          <div
+            className="overflow-x-auto text-sm leading-relaxed [&>pre]:p-5 [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:bg-[#0d1117]!"
+            dangerouslySetInnerHTML={{ __html: highlighted }}
+          />
 
           {!expanded && (
-            <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#1a1a1a] to-transparent flex items-end justify-center pb-4">
+            <div className="absolute inset-x-0 bottom-0 h-28 flex items-end justify-center pb-4"
+              style={{ background: "linear-gradient(to top, #0d1117, transparent)" }}>
               <button
                 onClick={() => setExpanded(true)}
                 className="bg-white/10 hover:bg-white/18 text-white text-sm font-medium px-5 py-2 rounded-full transition-colors border border-white/15"
@@ -133,10 +160,10 @@ export function PreviewFrame({ slug, code, fileName }: PreviewFrameProps) {
         </div>
 
         {expanded && (
-          <div className="flex justify-center py-3 border-t border-white/8">
+          <div className="flex justify-center py-3 bg-[#0d1117] border-t border-[#30363d]">
             <button
               onClick={() => setExpanded(false)}
-              className="text-white/35 hover:text-white/60 text-xs font-medium transition-colors"
+              className="text-[#8b949e] hover:text-white text-xs font-medium transition-colors"
             >
               Collapse ↑
             </button>
