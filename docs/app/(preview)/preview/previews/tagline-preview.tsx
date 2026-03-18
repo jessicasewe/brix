@@ -1,4 +1,4 @@
-import { Tagline } from "../../ui/tagline";
+import { Tagline } from "../../../ui/tagline";
 
 export function TaglinePreview() {
   return (

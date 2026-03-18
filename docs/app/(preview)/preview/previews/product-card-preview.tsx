@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductCard } from "../../ui/product-card";
+import { ProductCard } from "../../../ui/product-card";
 
 export function ProductCardPreview() {
   return (

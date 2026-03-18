@@ -1,4 +1,4 @@
-import { TopBanner } from "../../ui/top-banner";
+import { TopBanner } from "../../../ui/top-banner";
 
 export function TopBannerPreview() {
   return (

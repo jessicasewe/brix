@@ -1,4 +1,4 @@
-import { Carousel } from "../../ui/carousel";
+import { Carousel } from "../../../ui/carousel";
 
 const items = [
   { id: "1", url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=520&h=580&fit=crop", alt: "Look 1", title: "Look 1" },

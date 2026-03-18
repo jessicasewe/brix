@@ -12,11 +12,17 @@ interface PreviewFrameProps {
   framework: string;
 }
 
+const viewportHeights: Record<Viewport, number> = {
+  desktop: 560,
+  tablet: 640,
+  mobile: 780,
+};
+
 const viewports: { id: Viewport; label: string; width: number | null; icon: React.ReactNode }[] = [
   {
     id: "desktop",
     label: "Desktop",
-    width: null, // 100%
+    width: null, // fills container
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} className="w-4 h-4">
         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -54,8 +60,10 @@ export function PreviewFrame({ slug, code, fileName }: PreviewFrameProps) {
 
   const active = viewports.find((v) => v.id === viewport)!;
 
+  const height = viewportHeights[viewport];
+
   return (
-    <div className="flex flex-col gap-0 rounded-2xl overflow-hidden border border-black/10">
+    <div className="flex flex-col gap-0 rounded-2xl overflow-hidden border border-black/10 max-w-5xl">
       {/* Toolbar */}
       <div className="flex items-center justify-between px-4 py-2.5 bg-white border-b border-black/10">
         {/* Viewport switcher */}
@@ -83,16 +91,16 @@ export function PreviewFrame({ slug, code, fileName }: PreviewFrameProps) {
       </div>
 
       {/* Preview area */}
-      <div className="bg-[#edeae2] overflow-auto" style={{ minHeight: "520px" }}>
+      <div className="bg-[#edeae2] overflow-x-auto" style={{ height: `${height}px` }}>
         <div
-          className="mx-auto h-full transition-all duration-300"
+          className="mx-auto transition-all duration-300 h-full"
           style={{ width: active.width ? `${active.width}px` : "100%" }}
         >
           <iframe
             key={viewport}
             src={`/preview/${slug}`}
             className="w-full border-0 block"
-            style={{ height: "520px" }}
+            style={{ height: `${height}px` }}
             title={`${slug} preview — ${active.label}`}
           />
         </div>

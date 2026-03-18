@@ -1,4 +1,4 @@
-import { VideoHero } from "../../ui/video-hero";
+import { VideoHero } from "../../../ui/video-hero";
 
 export function VideoHeroPreview() {
   return (

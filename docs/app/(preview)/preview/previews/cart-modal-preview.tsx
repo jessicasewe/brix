@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CartModal } from "../../ui/cart-modal";
+import { CartModal } from "../../../ui/cart-modal";
 
 export function CartModalPreview() {
   const [open, setOpen] = useState(true);
